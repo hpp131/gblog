@@ -43,3 +43,14 @@ func TestQueryUser(t *testing.T){
 	}
 	t.Log(result)
 }
+
+
+func TestDescribeUser(t *testing.T){
+	req := users.NewDescribeUserRequest()
+	req.UserId = 2
+	res, err := i.DescribeUser(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(res)
+}

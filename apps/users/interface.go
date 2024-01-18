@@ -95,3 +95,7 @@ func (q *QueryUserRequest) Offset() int {
 type DescribeUserRequest struct {
 	UserId int64
 }
+
+func NewDescribeUserRequest() *DescribeUserRequest {
+	return &DescribeUserRequest{}
+}

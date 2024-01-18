@@ -47,5 +47,10 @@ func (u *UserServiceImple) QueryUser(ctx context.Context, in *users.QueryUserReq
 }
 
 func (u *UserServiceImple) DescribeUser(ctx context.Context, in *users.DescribeUserRequest) (*users.User, error) {
-	return nil, nil
+	user := &users.User{}
+	err := u.db.WithContext(ctx).Where("id = ?", in.UserId).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
