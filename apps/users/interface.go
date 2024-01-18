@@ -2,9 +2,9 @@ package users
 
 import (
 	"context"
-	// "errors"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/infraboard/mcube/tools/pretty"
 )
 
 type Role int
@@ -32,6 +32,17 @@ type Service interface {
 type UserSet struct {
 	Items  []*User
 	Totals int64
+}
+
+// 实现stringer接口，使用单元测试t.Log()或fmt.xxx()函数时起作用
+func (s *UserSet) string() string {
+	return pretty.ToJSON(s)
+}
+
+func NewUserSet() *UserSet {
+	return &UserSet{
+		Items: []*User{},
+	}
 }
 
 func NewCreateUserRequest() *CreateUserRequest {
@@ -67,6 +78,18 @@ type QueryUserRequest struct {
 	PageNum  int
 	// 可以根据指定用户名进行查询
 	Username string
+}
+
+func NewQueryUserRequest() *QueryUserRequest {
+	return &QueryUserRequest{}
+}
+
+func (q *QueryUserRequest) Limit() int {
+	return q.PageSize
+}
+
+func (q *QueryUserRequest) Offset() int {
+	return (q.PageNum - 1) * q.PageSize
 }
 
 type DescribeUserRequest struct {

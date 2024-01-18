@@ -26,3 +26,7 @@ func NewUser(c *CreateUserRequest) *User {
 func (u *User) String() string {
 	return pretty.ToJSON(u)
 }
+
+func (u *User) TableName() string {
+	return "users"
+}
