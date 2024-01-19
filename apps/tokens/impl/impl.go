@@ -1,7 +1,6 @@
 package impl
 
 import (
-	"github.com/hpp131/gblog/apps/tokens"
 	"github.com/hpp131/gblog/conf"
 	"gorm.io/gorm"
 )
@@ -18,16 +17,3 @@ func NewTokenServiceImpl(db *gorm.DB) *TokenServiceImpl {
 
 
 
-func (t *TokenServiceImpl) GetToken(token string, userID uint64) (*tokens.Token, error) {
-	return nil, nil
-}
-
-
-func (t *TokenServiceImpl) RevokeToken(token string, userID uint64) error {
-	return nil
-}
-
-
-func (t *TokenServiceImpl) ValidateToken(token string, userID uint64) error {
-	return nil
-}
