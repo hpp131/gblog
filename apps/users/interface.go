@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/infraboard/mcube/tools/pretty"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Role int
@@ -20,7 +21,7 @@ var v = validator.New()
 // 接口定义, 一定要考虑兼容性, 接口的参数不能变
 // CreateUserRequest,QueryUserRequest,DescribeUserRequest可以修改，但是修改后不会影响接口方法以及不必改写实现类的入参和出参（返回值）
 type Service interface {
-	CreatedUser(context.Context, *CreateUserRequest) (*User, error)
+	CreateUser(context.Context, *CreateUserRequest) (*User, error)
 	QueryUser(context.Context, *QueryUserRequest) (*UserSet, error)
 	DescribeUser(context.Context, *DescribeUserRequest) (*User, error)
 
@@ -68,6 +69,24 @@ func (c *CreateUserRequest) Validate() error {
 	err := v.Struct(c)
 	if err != nil {
 		return err
+	}
+	c.EncryptyPassword()
+	return nil
+}
+
+// 使用bcrypt对password进行入库前的加密,确保数据库中不存储明文密码
+func (c *CreateUserRequest) EncryptyPassword()  {
+	bypePassword, err := bcrypt.GenerateFromPassword([]byte(c.Password), 10)
+	if err != nil {
+		return
+	}
+	c.Password = string(bypePassword)
+}
+
+func (c *CreateUserRequest) CheckPassword(password string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(c.Password), []byte(password))
+	if err != nil {
+		return	err
 	}
 	return nil
 }
