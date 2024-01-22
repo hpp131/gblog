@@ -18,7 +18,7 @@ var (
 
 func TestCreateUser(t *testing.T){
 	req := users.NewCreateUserRequest()
-	req.Username = "admin9"
+	req.Username = "admin1"
 	req.Password = "123123"
 	req.Role = users.ADMIN
 	user, err := i.CreateUser(ctx, req)

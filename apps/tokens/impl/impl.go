@@ -2,6 +2,7 @@ package impl
 
 import (
 	"github.com/hpp131/gblog/apps/users"
+	"github.com/hpp131/gblog/apps/users/impl"
 	"github.com/hpp131/gblog/conf"
 	"gorm.io/gorm"
 )
@@ -13,6 +14,7 @@ type TokenServiceImpl struct {
 	user users.Service
 }
 
-func NewTokenServiceImpl(db *gorm.DB) *TokenServiceImpl {
-	return &TokenServiceImpl{db: conf.C().DB()}
+func NewTokenServiceImpl() *TokenServiceImpl {
+	return &TokenServiceImpl{db: conf.C().DB(),
+		user: impl.NewUserServiceImple()}
 }
