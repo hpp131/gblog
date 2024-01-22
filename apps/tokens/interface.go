@@ -6,7 +6,7 @@ import (
 
 type Service interface{
 	// 用户登录后，需要颁发token给用户
-	GetToken(ctx context.Context, in *GetTokenRequest) (*Token, error)
+	IssueToken(ctx context.Context, in *GetTokenRequest) (*Token, error)
 	// 用户注销后，需要把token给吊销掉
 	RevokeToken(ctx context.Context, in *RevokeTokenRequest) (error)
 	// 验证用户每次请求中所携带的token
