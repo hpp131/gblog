@@ -10,9 +10,9 @@ import (
 
 type Token struct {
 	AccessToken           string
-	AccessTokenExpiresAt  int64
+	AccessTokenExpiredAt  int64
 	RefreshToken          string
-	RefreshTokenExpiresAt int64
+	RefreshTokenExpiredAt int64
 	CreatedAt             int64
 	UpdatedAt             int64
 	UserId                int64
@@ -22,8 +22,8 @@ type Token struct {
 
 func NewToken() *Token {
 	return &Token{
-		AccessTokenExpiresAt: 7200, // 2 hoursa
-		RefreshTokenExpiresAt: 86400, // 1 day
+		AccessTokenExpiredAt: 7200, // 2 hoursa
+		RefreshTokenExpiredAt: 86400, // 1 day
 		CreatedAt: time.Now().Unix(),
 		// 暂用uuid作为token
 		AccessToken: xid.New().String(),
@@ -33,10 +33,10 @@ func NewToken() *Token {
 
 
 func (t *Token)	Validate() error {
-	if (t.CreatedAt + t.RefreshTokenExpiresAt < time.Now().Unix()) {
+	if (t.CreatedAt + t.RefreshTokenExpiredAt < time.Now().Unix()) {
 		return fmt.Errorf("RefreshToken is expired")
 	}
-	if (t.CreatedAt + t.AccessTokenExpiresAt < time.Now().Unix()){
+	if (t.CreatedAt + t.AccessTokenExpiredAt < time.Now().Unix()){
 		return fmt.Errorf("AccessToken is expired")
 	}
 	return nil

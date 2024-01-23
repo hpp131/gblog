@@ -28,26 +28,33 @@ func (t *TokenServiceImpl) IssueToken(ctx context.Context, in *tokens.IssueToken
 	tk := tokens.NewToken()
 	tk.UserId = userSet.Items[0].Id
 	tk.Username = in.Username
+	err = t.db.Create(tk).Error
+	if err != nil {
+		return nil, err
+	}
 	return tk, nil
 }
 
 
-func (t *TokenServiceImpl) RevokeToken(ctx context.Context, in *tokens.RevokeTokenRequest) error {
+func (t *TokenServiceImpl) RevokeToken(ctx context.Context, in *tokens.RevokeTokenRequest) (error) {
 	// 从库里面删除某条token记录
-	t.db.Model(&tokens.Token{}).Where("access_token = ?", in.AccessToken).Delete(&tokens.Token{})
+	err := t.db.Where("access_token = ?", in.AccessToken).Delete(&tokens.Token{}).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 
-func (t *TokenServiceImpl) ValidateToken(ctx context.Context, in *tokens.ValidateTokenRequest) error {
+func (t *TokenServiceImpl) ValidateToken(ctx context.Context, in *tokens.ValidateTokenRequest) (*tokens.Token, error) {
 	// 校验token是否在过期时间内/是否是刷新令牌/是否已经注销
 	tk := &tokens.Token{}
-	err := t.db.Model(&tokens.Token{}).Find("access_token = ?, ", in.AccessToken).First(&tk).Error
+	err := t.db.Model(&tokens.Token{}).Where("access_token = ? and refresh_token = ?", in.AccessToken, in.RefreshToken).First(&tk).Error
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if err := tk.Validate();err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return tk, nil
 }

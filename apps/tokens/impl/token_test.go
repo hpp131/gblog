@@ -24,12 +24,19 @@ func TestIssueToken(t *testing.T){
 
 
 func TestRevokeToken(t *testing.T){
-
-	
+	req := tokens.NewRevokeTokenRequest("cmn41fosfi0usl19o7jg")
+	err := tl.RevokeToken(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 
 func TestValidateToken(t *testing.T){
-
-	
+	req := tokens.NewValidateTokenRequest("cmnl1posfi0keb0b82jg", "cmnl1posfi0keb0b82k0")
+	tk, err := tl.ValidateToken(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tk)
 }

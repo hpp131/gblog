@@ -1,1 +1,2 @@
 # gblog
+- How exception work?
