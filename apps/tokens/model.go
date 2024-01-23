@@ -1,9 +1,9 @@
 package tokens
 
 import (
-	"fmt"
 	"time"
 
+	// "github.com/hpp131/gblog/apps/tokens/impl"
 	"github.com/infraboard/mcube/tools/pretty"
 	"github.com/rs/xid"
 )
@@ -34,10 +34,10 @@ func NewToken() *Token {
 
 func (t *Token)	Validate() error {
 	if (t.CreatedAt + t.RefreshTokenExpiredAt < time.Now().Unix()) {
-		return fmt.Errorf("RefreshToken is expired")
+		return ErrAccessTokenExpired
 	}
 	if (t.CreatedAt + t.AccessTokenExpiredAt < time.Now().Unix()){
-		return fmt.Errorf("AccessToken is expired")
+		return ErrRefreshTokenExpired
 	}
 	return nil
 }
