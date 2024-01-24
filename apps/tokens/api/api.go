@@ -31,7 +31,7 @@ func (t *TokenAPIHandler) Login(c *gin.Context) {
 	}
 	tk, err := t.svc.IssueToken(c, req)
 	// 设置token到cookie中
-	c.SetCookie("token", tk.AccessToken, 3600, "/", "127.0.0.1", false, true)
+	c.SetCookie("token", tk.AccessToken, int(tk.AccessTokenExpiredAt), "/", "127.0.0.1", false, true)
 
 	if err != nil {
 		// 自定义RestfulAPIResponse
@@ -53,7 +53,7 @@ func (t *TokenAPIHandler) LogOut(c *gin.Context) {
 		response.Failed(c, err)
 		return
 	}
-		
+
 	// 删除客户端的token
 	c.SetCookie("token", "", -1, "/", "127.0.0.1", false, true)
 
