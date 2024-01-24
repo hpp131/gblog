@@ -10,7 +10,7 @@ type Service interface {
 	// 用户注销后，需要把token给吊销掉
 	RevokeToken(ctx context.Context, in *RevokeTokenRequest) error
 	// 验证用户每次请求中所携带的token
-	ValidateToken(ctx context.Context, in *ValidateTokenRequest) error
+	ValidateToken(ctx context.Context, in *ValidateTokenRequest) (*Token, error)
 }
 
 type IssueTokenRequest struct {
