@@ -6,9 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hpp131/gblog/apps/tokens"
 	"github.com/hpp131/gblog/response"
+	"github.com/hpp131/gblog/ioc"
 )
 
-type TokenAPIHandler struct{
+func init(){
+	ioc.API().Registry(tokens.AppName, &TokenAPIHandler{})
+}
+
+type TokenAPIHandler struct {
 	svc tokens.Service
 }
 
@@ -16,13 +21,14 @@ func NewTokenAPIHandler(svc tokens.Service) *TokenAPIHandler {
 	return &TokenAPIHandler{svc}
 }
 
+// 注册token模块内所有api的路由路径
 func (t *TokenAPIHandler) Registry(r gin.IRouter) {
 	moduleRouter := r.Group(tokens.AppName)
 	moduleRouter.POST("/", t.Login)
 	moduleRouter.DELETE("/", t.LogOut)
-
 }
 
+// 该func供登录api调用
 func (t *TokenAPIHandler) Login(c *gin.Context) {
 	req := tokens.NewIssueTokenRequest("", "")
 	err := c.BindJSON(req)
@@ -36,16 +42,17 @@ func (t *TokenAPIHandler) Login(c *gin.Context) {
 	if err != nil {
 		// 自定义RestfulAPIResponse
 		response.Failed(c, err)
-	}else{
+	} else {
 		response.Success(c, tk)
 	}
-	
+
 }
 
+// 该func供退出api调用
 func (t *TokenAPIHandler) LogOut(c *gin.Context) {
 	// 获取请求头中的Authorization字段值，如果没有就去cookie中获取
 	var req *tokens.RevokeTokenRequest
-	
+
 	at := getAccessTokenFromHttp(c.Request)
 	req = tokens.NewRevokeTokenRequest(at)
 	err := t.svc.RevokeToken(c, req)
@@ -64,8 +71,9 @@ func (t *TokenAPIHandler) LogOut(c *gin.Context) {
 	response.Success(c, "退出成功")
 }
 
+
 // 分别尝试从Authorization和cookie字段中获取accessToken
-func getAccessTokenFromHttp(r *http.Request) string{
+func getAccessTokenFromHttp(r *http.Request) string {
 	at := r.Header.Get("Authorization")
 	if at != "" {
 		return at
@@ -77,3 +85,16 @@ func getAccessTokenFromHttp(r *http.Request) string{
 	return cookie.Value
 }
 
+// 实现ioc.Objector interface
+func (t *TokenAPIHandler) Init() error{
+	obj, err := ioc.Controller().Get(tokens.AppName)
+	if err != nil {
+		return err
+	}
+	t.svc = obj.(tokens.Service)
+	return nil
+}
+
+func (t *TokenAPIHandler) Destroy() error{
+	return nil
+}

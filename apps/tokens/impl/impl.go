@@ -1,11 +1,24 @@
 package impl
 
 import (
+	"github.com/hpp131/gblog/apps/tokens"
 	"github.com/hpp131/gblog/apps/users"
 	"github.com/hpp131/gblog/apps/users/impl"
 	"github.com/hpp131/gblog/conf"
+	"github.com/hpp131/gblog/ioc"
 	"gorm.io/gorm"
 )
+
+// 向ioc容器注册TokenServiceImpl的实例对象
+func init() {
+	ioc.Controller().Registry(tokens.AppName, &TokenServiceImpl{})
+}
+
+// 实体的构造函数一般写在对应实体的上面
+func NewTokenServiceImpl() *TokenServiceImpl {
+	return &TokenServiceImpl{db: conf.C().DB(),
+		user: impl.NewUserServiceImple()}
+}
 
 // 定义tokens.Service interface的实现类
 type TokenServiceImpl struct {
@@ -14,7 +27,17 @@ type TokenServiceImpl struct {
 	user users.Service
 }
 
-func NewTokenServiceImpl() *TokenServiceImpl {
-	return &TokenServiceImpl{db: conf.C().DB(),
-		user: impl.NewUserServiceImple()}
+// 实现ioc.Objector interface
+func (t *TokenServiceImpl) Init() error {
+	if obj, err := ioc.Controller().Get(users.AppName); err != nil {
+		return err
+	}else{
+		t.user = obj.(users.Service)
+		t.db = conf.C().DB()
+	}
+	return nil
+}
+
+func (t *TokenServiceImpl) Destroy() error {
+	return nil
 }
