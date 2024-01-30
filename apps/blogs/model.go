@@ -1,7 +1,16 @@
 package blogs
 
+import "time"
+
+
+func NewBlog(in  *CreateBlogRequest) *Blog{
+	return &Blog{
+		CreatedAt: time.Now().Unix(),
+		CreateBlogRequest: in,
+	}
+}
 type Blog struct {
-	CreateBlogRequest
+	*CreateBlogRequest
 
 	Status      string
 	PublishedAt int64
