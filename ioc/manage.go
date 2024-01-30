@@ -40,9 +40,9 @@ func  Controller() *Container {
 // 	return nc.namespace["config"]
 // }
 
-func (n *NamespacedContainer) Init() error {
+func  Init() error {
 	// 循环执行ioc容器内已经注册的对象的Init方法
-	for _, container := range n.namespace{
+	for _, container := range nc.namespace{
 		for _, obj := range container.storage{
 			if err := obj.Init(); err != nil{
 				return err
@@ -52,9 +52,9 @@ func (n *NamespacedContainer) Init() error {
 	return nil
 }
 
-func (n *NamespacedContainer) Destroy() error {
+func Destroy() error {
 	// 循环执行ioc容器内已经注册的对象的Destroy方法
-	for _, container := range n.namespace{
+	for _, container := range nc.namespace{
 		for _, obj := range container.storage{
 			if err := obj.Destroy(); err != nil{
 				return err
@@ -64,9 +64,9 @@ func (n *NamespacedContainer) Destroy() error {
 	return nil
 }
 
-func(n *NamespacedContainer) GinAPIRegistry(rr gin.IRouter) {
-	// 循环执行ioc容器内已经注册的对象的Registry方法
-	for _, container := range n.namespace{
+func GinAPIRegistry(rr gin.IRouter) {
+	// 循环执行ioc容器内已经注册的API对象的Registry方法
+	for _, container := range nc.namespace{
 		for _, obj := range container.storage{
 			if api, ok := obj.(GinAPI); ok {
 				api.Registry(rr)
