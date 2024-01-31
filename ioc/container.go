@@ -16,9 +16,9 @@ func (c *Container) Registry(name string, value Objector) {
 	c.storage[name] = value
 }
 
-func (c *Container) Get(name string) (Objector, error) {
+func (c *Container) Get(name string) (Objector) {
 	if v, ok := c.storage[name]; ok {
-		return v, nil
+		return v
 	}
-	return nil, nil
+	return nil
 }

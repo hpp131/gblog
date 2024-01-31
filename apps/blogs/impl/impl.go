@@ -44,20 +44,24 @@ func (b *BlogServiceImpl) DescribeBlog(ctx context.Context, in *blogs.DescribeBl
 	return bl, nil
 }
 
-func (b *BlogServiceImpl) PatchBlog(ctx context.Context, in *blogs.PatchBlogRequest) (bl *blogs.Blog, err error) {
-	// b.db.Update()
-	return bl, nil
-
-}
-
 func (b *BlogServiceImpl) PutBlog(ctx context.Context, in *blogs.PutBlogRequest) (bl *blogs.Blog, err error) {
-	// bl.Id = in.Id
-	// bl.UpdatedAt = in.UpdatedAt
-	// bl.CreateBlogRequest = in.CreateBlogRequest
-	// b.db.Save(&bl)
-	// return bl, nil
-	return nil, nil
+	bl.Id = in.Id
+	bl.UpdatedAt = in.UpdatedAt
+	bl.CreateBlogRequest = in.CreateBlogRequest
+	if err := b.db.Model(bl).Updates(blogs.Blog{UpdatedAt: in.UpdatedAt, CreateBlogRequest: in.CreateBlogRequest}).Error; err != nil{
+		return nil, err
+	}
+	return bl, nil
 }
+
+// func (b *BlogServiceImpl) PutBlog(ctx context.Context, in *blogs.PutBlogRequest) (bl *blogs.Blog, err error) {
+// 	// bl.Id = in.Id
+// 	// bl.UpdatedAt = in.UpdatedAt
+// 	// bl.CreateBlogRequest = in.CreateBlogRequest
+// 	// b.db.Save(&bl)
+// 	// return bl, nil
+// 	return nil, nil
+// }
 
 func (b *BlogServiceImpl) DeleteBlog(ctx context.Context, in *blogs.DeleteBlogRequest) (bl *blogs.Blog, err error) {
 	if err := b.db.Where("id = ?", in.Id).Delete(&bl).Error; err != nil {
@@ -66,8 +70,7 @@ func (b *BlogServiceImpl) DeleteBlog(ctx context.Context, in *blogs.DeleteBlogRe
 	return bl, nil
 }
 
-// 从ioc容器解决自身依赖
-
+// 从ioc容器中获取自身需要的依赖
 func (b *BlogServiceImpl) Init() error {
 	b.db = conf.C().DB()
 	return nil
@@ -76,6 +79,3 @@ func (b *BlogServiceImpl) Init() error {
 func (b *BlogServiceImpl) Destroy() error {
 	return nil
 }
-
-
-

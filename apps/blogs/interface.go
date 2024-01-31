@@ -10,10 +10,10 @@ type Service interface {
 	QueryBlog(context.Context, *QueryBlogRequest) (*BlogSet, error)
 	DescribeBlog(context.Context, *DescribeBlogRequest) (*Blog, error)
 	// 非全量字段更新
-	PatchBlog(context.Context, *PatchBlogRequest) (*Blog, error)
+	// PatchBlog(context.Context, *PatchBlogRequest) (*Blog, error)
 	// 全量字段更新
 	PutBlog(context.Context, *PutBlogRequest) (*Blog, error)
-	DeleteBlog(context.Context, *DescribeBlogRequest) (*Blog, error)
+	DeleteBlog(context.Context, *DeleteBlogRequest) (*Blog, error)
 }
 
 func NewBlogSet() *BlogSet {
@@ -29,16 +29,16 @@ type BlogSet struct {
 
 func NewCreateBlogRequest() *CreateBlogRequest {
 	return &CreateBlogRequest{
-		Tags: map[string]interface{}{},
+		Tags: map[string]string{},
 	}
 }
 
 type CreateBlogRequest struct {
-	Title   string         `json:"title" gorm:"colume:title" validate:"required"`
-	Content string         `json:"content" gorm:"colume:content" validate:"required"`
-	Tags    map[string]any `json:"tags" gorm:"colume:tags;serializer:json" validate:"required"`
-	Summary string         `json:"summary" gorm:"colume:summary" validate:"required"`
-	Author  string         `json:"author" gorm:"colume:author" validate:"required"`
+	Title   string         `json:"title" gorm:"colume:title"`
+	Content string         `json:"content" gorm:"colume:content"`
+	Tags    map[string]string `json:"tags" gorm:"colume:tags;serializer:json"`
+	Summary string         `json:"summary" gorm:"colume:summary"`
+	Author  string         `json:"author" gorm:"colume:author"`
 }
 
 func NewQueryBlogRequest() *QueryBlogRequest {
@@ -70,21 +70,23 @@ type DescribeBlogRequest struct {
 	Id int64
 }
 
-func NewPatchBlogRequest() *PatchBlogRequest {
-	return &PatchBlogRequest{
-		UpdatedAt:         time.Now().Unix(),
-		CreateBlogRequest: NewCreateBlogRequest(),
-	}
-}
+// func NewPatchBlogRequest(id int64) *PatchBlogRequest {
+// 	return &PatchBlogRequest{
+// 		Id: id,
+// 		UpdatedAt:         time.Now().Unix(),
+// 		CreateBlogRequest: NewCreateBlogRequest(),
+// 	}
+// }
 
-type PatchBlogRequest struct {
-	Id        int64
-	UpdatedAt int64
-	*CreateBlogRequest
-}
+// type PatchBlogRequest struct {
+// 	Id        int64
+// 	UpdatedAt int64
+// 	*CreateBlogRequest
+// }
 
-func NewPutBlogRequest() *PutBlogRequest {
+func NewPutBlogRequest(id int64) *PutBlogRequest {
 	return &PutBlogRequest{
+		Id: id,
 		UpdatedAt:         time.Now().Unix(),
 		CreateBlogRequest: NewCreateBlogRequest(),
 	}

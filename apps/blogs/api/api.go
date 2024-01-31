@@ -1,10 +1,16 @@
 package api
 
 import (
+	// "fmt"
+	"fmt"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/hpp131/gblog/apps/blogs"
 	"github.com/hpp131/gblog/ioc"
+	"github.com/hpp131/gblog/response"
 )
+
 
 func init() {
 	ioc.API().Registry(blogs.AppName, &BlogAPIHandler{})
@@ -19,23 +25,20 @@ func (b *BlogAPIHandler) Registry(rr gin.IRouter) {
 	// createBlog
 	blogRouter.POST("/", b.createBlog)
 	// queryBlog
-	blogRouter.POST("/", b.queryBlog)
+	blogRouter.GET("/", b.queryBlog)
 	// describBlog
-	blogRouter.POST("/", b.describeBlog)
-	// patchBlog
-	blogRouter.POST("/", b.patchBlog)
+	blogRouter.GET("/:id", b.describeBlog)
+	// // patchBlog
+	// blogRouter.PATCH("/", b.patchBlog)
 	// putBlog
-	blogRouter.POST("/", b.putBlog)
+	blogRouter.PUT("/:id", b.putBlog)
 	// deleteBlog
-	blogRouter.POST("/", b.deleteBlog)
+	blogRouter.DELETE("/:id", b.deleteBlog)
 }
 
 // 实现ioc.Objector interface
 func (b *BlogAPIHandler) Init() error {
-	obj, err := ioc.Controller().Get(blogs.AppName)
-	if err != nil {
-		return err
-	}
+	obj := ioc.Controller().Get(blogs.AppName)
 	if value, ok := obj.(blogs.Service); ok {
 		b.svc = value
 	}
@@ -46,25 +49,62 @@ func (b *BlogAPIHandler) Destroy() error {
 	return nil
 }
 
-func (b *BlogAPIHandler) createBlog(*gin.Context) {
+func (b *BlogAPIHandler) createBlog(c *gin.Context) {
+	req := blogs.NewCreateBlogRequest()
+	if err := c.BindJSON(req); err != nil{
+		response.Failed(c, err)
+	}
+	fmt.Println(req)
+	bl, err := b.svc.CreateBlog(c.Request.Context(), req);
+	if err != nil {
+		response.Failed(c, err)
+	}
+	response.Success(c, bl)
 
 }
 
-func (b *BlogAPIHandler) queryBlog(*gin.Context) {
-
+func (b *BlogAPIHandler) queryBlog(c *gin.Context) {
+	var err error
+	req := blogs.NewQueryBlogRequest()
+	req.PageNum, err = strconv.Atoi(c.Query("pagenum"))
+	if err != nil {
+		response.Failed(c, ErrQueryParam)
+	}
+	blogSet, _ := b.svc.QueryBlog(c, req)
+	response.Success(c, blogSet)
 }
 
-func (b *BlogAPIHandler) describeBlog(*gin.Context) {
-
+func (b *BlogAPIHandler) describeBlog(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id")) 
+	req := blogs.NewDescribeBlogRequest(int64(id))
+	if bl, err := b.svc.DescribeBlog(c, req); err != nil{
+		response.Failed(c, err)
+	}else{
+		response.Success(c, bl)
+	}
 }
-func (b *BlogAPIHandler) patchBlog(*gin.Context) {
 
+// func (b *BlogAPIHandler) patchBlog(*gin.Context) {
+// 	response.Success(c, )
+
+// }
+
+func (b *BlogAPIHandler) putBlog(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id")) 
+	req := blogs.NewPutBlogRequest((int64(id))) 
+	if bl, err := b.svc.PutBlog(c, req); err != nil{
+		response.Failed(c, err)
+	}else{
+		response.Success(c, bl)
+	}
 }
 
-func (b *BlogAPIHandler) putBlog(*gin.Context) {
-
-}
-
-func (b *BlogAPIHandler) deleteBlog(*gin.Context) {
-
+func (b *BlogAPIHandler) deleteBlog(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id")) 
+	req := blogs.NewDeleteBlogRequest(int64(id))
+	if bl, err := b.svc.DeleteBlog(c, req); err != nil{
+		response.Failed(c, err)
+	}else{
+		response.Success(c, bl)
+	}
 }

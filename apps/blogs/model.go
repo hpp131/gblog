@@ -12,7 +12,7 @@ func NewBlog(in  *CreateBlogRequest) *Blog{
 type Blog struct {
 	*CreateBlogRequest
 
-	Status      string
+	Status      int
 	PublishedAt int64
 
 	Id          int64

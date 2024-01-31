@@ -1,6 +1,9 @@
 package impl
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/hpp131/gblog/apps/tokens"
 	"github.com/hpp131/gblog/apps/users"
 	"github.com/hpp131/gblog/apps/users/impl"
@@ -29,15 +32,62 @@ type TokenServiceImpl struct {
 
 // 实现ioc.Objector interface
 func (t *TokenServiceImpl) Init() error {
-	if obj, err := ioc.Controller().Get(users.AppName); err != nil {
-		return err
-	}else{
-		t.user = obj.(users.Service)
-		t.db = conf.C().DB()
-	}
+	obj := ioc.Controller().Get(users.AppName)
+	t.user = obj.(users.Service)
+	t.db = conf.C().DB()
 	return nil
 }
 
 func (t *TokenServiceImpl) Destroy() error {
 	return nil
+}
+
+
+func (t *TokenServiceImpl) IssueToken(ctx context.Context, in *tokens.IssueTokenRequest) (*tokens.Token, error) {
+	user := users.NewQueryUserRequest()
+	user.Username = in.Username
+	userSet, err := t.user.QueryUser(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	if len(userSet.Items) == 0 {
+		return nil, fmt.Errorf("user not found")
+	}
+	// 判断用户存在后校验其密码
+	if err := userSet.Items[0].CheckPassword(in.Password);err != nil {
+		return nil, err
+	}
+	// 密码校验通过后，生成token
+	tk := tokens.NewToken()
+	tk.UserId = userSet.Items[0].Id
+	tk.Username = in.Username
+	err = t.db.Create(tk).Error
+	if err != nil {
+		return nil, err
+	}
+	return tk, nil
+}
+
+
+func (t *TokenServiceImpl) RevokeToken(ctx context.Context, in *tokens.RevokeTokenRequest) (error) {
+	// 从库里面删除某条token记录
+	err := t.db.Where("access_token = ?", in.AccessToken).Delete(&tokens.Token{}).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+
+func (t *TokenServiceImpl) ValidateToken(ctx context.Context, in *tokens.ValidateTokenRequest) (*tokens.Token, error) {
+	// 校验token是否在过期时间内/是否是刷新令牌/是否已经注销
+	tk := &tokens.Token{}
+	err := t.db.Model(&tokens.Token{}).Where("access_token = ? and refresh_token = ?", in.AccessToken, in.RefreshToken).First(&tk).Error
+	if err != nil {
+		return nil, err
+	}
+	if err := tk.Validate();err != nil {
+		return nil, err
+	}
+	return tk, nil
 }

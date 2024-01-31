@@ -87,10 +87,7 @@ func getAccessTokenFromHttp(r *http.Request) string {
 
 // 实现ioc.Objector interface
 func (t *TokenAPIHandler) Init() error{
-	obj, err := ioc.Controller().Get(tokens.AppName)
-	if err != nil {
-		return err
-	}
+	obj := ioc.Controller().Get(tokens.AppName)
 	t.svc = obj.(tokens.Service)
 	return nil
 }
