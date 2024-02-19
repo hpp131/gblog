@@ -53,7 +53,7 @@ func (t *TokenAPIHandler) LogOut(c *gin.Context) {
 	// 获取请求头中的Authorization字段值，如果没有就去cookie中获取
 	var req *tokens.RevokeTokenRequest
 
-	at := getAccessTokenFromHttp(c.Request)
+	at := GetAccessTokenFromHttp(c.Request)
 	req = tokens.NewRevokeTokenRequest(at)
 	err := t.svc.RevokeToken(c, req)
 	if err != nil {
@@ -73,7 +73,7 @@ func (t *TokenAPIHandler) LogOut(c *gin.Context) {
 
 
 // 分别尝试从Authorization和cookie字段中获取accessToken
-func getAccessTokenFromHttp(r *http.Request) string {
+func GetAccessTokenFromHttp(r *http.Request) string {
 	at := r.Header.Get("Authorization")
 	if at != "" {
 		return at

@@ -82,7 +82,7 @@ func (t *TokenServiceImpl) RevokeToken(ctx context.Context, in *tokens.RevokeTok
 func (t *TokenServiceImpl) ValidateToken(ctx context.Context, in *tokens.ValidateTokenRequest) (*tokens.Token, error) {
 	// 校验token是否在过期时间内/是否是刷新令牌/是否已经注销
 	tk := &tokens.Token{}
-	err := t.db.Model(&tokens.Token{}).Where("access_token = ? and refresh_token = ?", in.AccessToken, in.RefreshToken).First(&tk).Error
+	err := t.db.Model(&tokens.Token{}).Where("access_token = ? ", in.AccessToken).First(&tk).Error
 	if err != nil {
 		return nil, err
 	}

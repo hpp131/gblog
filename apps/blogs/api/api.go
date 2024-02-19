@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hpp131/gblog/apps/blogs"
 	"github.com/hpp131/gblog/ioc"
+	"github.com/hpp131/gblog/middleware"
 	"github.com/hpp131/gblog/response"
 )
-
 
 func init() {
 	ioc.API().Registry(blogs.AppName, &BlogAPIHandler{})
@@ -22,12 +22,15 @@ type BlogAPIHandler struct {
 
 func (b *BlogAPIHandler) Registry(rr gin.IRouter) {
 	blogRouter := rr.Group(blogs.AppName)
-	// createBlog
-	blogRouter.POST("/", b.createBlog)
 	// queryBlog
 	blogRouter.GET("/", b.queryBlog)
 	// describBlog
 	blogRouter.GET("/:id", b.describeBlog)
+
+	// 对于增删写入api,在操作前需要先通过中间件的认证
+	blogRouter.Use(middleware.Auth)
+	// createBlog
+	blogRouter.POST("/", b.createBlog)
 	// // patchBlog
 	// blogRouter.PATCH("/", b.patchBlog)
 	// putBlog
@@ -51,11 +54,11 @@ func (b *BlogAPIHandler) Destroy() error {
 
 func (b *BlogAPIHandler) createBlog(c *gin.Context) {
 	req := blogs.NewCreateBlogRequest()
-	if err := c.BindJSON(req); err != nil{
+	if err := c.BindJSON(req); err != nil {
 		response.Failed(c, err)
 	}
 	fmt.Println(req)
-	bl, err := b.svc.CreateBlog(c.Request.Context(), req);
+	bl, err := b.svc.CreateBlog(c.Request.Context(), req)
 	if err != nil {
 		response.Failed(c, err)
 	}
@@ -75,11 +78,11 @@ func (b *BlogAPIHandler) queryBlog(c *gin.Context) {
 }
 
 func (b *BlogAPIHandler) describeBlog(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id")) 
+	id, _ := strconv.Atoi(c.Param("id"))
 	req := blogs.NewDescribeBlogRequest(int64(id))
-	if bl, err := b.svc.DescribeBlog(c, req); err != nil{
+	if bl, err := b.svc.DescribeBlog(c, req); err != nil {
 		response.Failed(c, err)
-	}else{
+	} else {
 		response.Success(c, bl)
 	}
 }
@@ -90,21 +93,21 @@ func (b *BlogAPIHandler) describeBlog(c *gin.Context) {
 // }
 
 func (b *BlogAPIHandler) putBlog(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id")) 
-	req := blogs.NewPutBlogRequest((int64(id))) 
-	if bl, err := b.svc.PutBlog(c, req); err != nil{
+	id, _ := strconv.Atoi(c.Param("id"))
+	req := blogs.NewPutBlogRequest((int64(id)))
+	if bl, err := b.svc.PutBlog(c, req); err != nil {
 		response.Failed(c, err)
-	}else{
+	} else {
 		response.Success(c, bl)
 	}
 }
 
 func (b *BlogAPIHandler) deleteBlog(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id")) 
+	id, _ := strconv.Atoi(c.Param("id"))
 	req := blogs.NewDeleteBlogRequest(int64(id))
-	if bl, err := b.svc.DeleteBlog(c, req); err != nil{
+	if bl, err := b.svc.DeleteBlog(c, req); err != nil {
 		response.Failed(c, err)
-	}else{
+	} else {
 		response.Success(c, bl)
 	}
 }

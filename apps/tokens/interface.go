@@ -38,9 +38,9 @@ func NewRevokeTokenRequest(accessToken string) *RevokeTokenRequest {
 type ValidateTokenRequest struct {
 	// 校验token是否在过期时间内/是否是刷新令牌/是否已经注销
 	AccessToken        string
-	RefreshToken string
+	// RefreshToken string
 }
 
-func NewValidateTokenRequest(accessToken, refreshToken string) *ValidateTokenRequest {
-	return &ValidateTokenRequest{AccessToken: accessToken, RefreshToken: refreshToken}	
+func NewValidateTokenRequest(accessToken string) *ValidateTokenRequest {
+	return &ValidateTokenRequest{AccessToken: accessToken}	
 }

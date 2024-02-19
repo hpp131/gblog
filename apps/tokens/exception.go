@@ -6,4 +6,5 @@ import "github.com/hpp131/gblog/exception"
 var (
 	ErrAccessTokenExpired  = exception.NewAPIException(1000, "access token expired")
 	ErrRefreshTokenExpired = exception.NewAPIException(1001, "refresh token invalid")
+	ErrTokenNotFound = exception.NewAPIException(1002, "Token is not found in request")
 )
