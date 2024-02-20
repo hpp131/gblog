@@ -60,6 +60,8 @@ func (t *TokenServiceImpl) IssueToken(ctx context.Context, in *tokens.IssueToken
 	// 密码校验通过后，生成token
 	tk := tokens.NewToken()
 	tk.UserId = userSet.Items[0].Id
+	// 补充Token.Role信息
+	tk.Role = userSet.Items[0].Role
 	tk.Username = in.Username
 	err = t.db.Create(tk).Error
 	if err != nil {

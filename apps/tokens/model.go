@@ -4,6 +4,7 @@ import (
 	"time"
 
 	// "github.com/hpp131/gblog/apps/tokens/impl"
+	"github.com/hpp131/gblog/apps/users"
 	"github.com/infraboard/mcube/tools/pretty"
 	"github.com/rs/xid"
 )
@@ -17,26 +18,26 @@ type Token struct {
 	UpdatedAt             int64
 	UserId                int64
 	Username              string
+	// 用于RBAC中间件,middleware.Required()
+	Role                  users.Role
 }
-
 
 func NewToken() *Token {
 	return &Token{
-		AccessTokenExpiredAt: 7200, // 2 hoursa
+		AccessTokenExpiredAt:  7200,  // 2 hoursa
 		RefreshTokenExpiredAt: 86400, // 1 day
-		CreatedAt: time.Now().Unix(),
+		CreatedAt:             time.Now().Unix(),
 		// 暂用uuid作为token
-		AccessToken: xid.New().String(),
+		AccessToken:  xid.New().String(),
 		RefreshToken: xid.New().String(),
 	}
 }
 
-
-func (t *Token)	Validate() error {
-	if (t.CreatedAt + t.RefreshTokenExpiredAt < time.Now().Unix()) {
+func (t *Token) Validate() error {
+	if t.CreatedAt+t.RefreshTokenExpiredAt < time.Now().Unix() {
 		return ErrAccessTokenExpired
 	}
-	if (t.CreatedAt + t.AccessTokenExpiredAt < time.Now().Unix()){
+	if t.CreatedAt+t.AccessTokenExpiredAt < time.Now().Unix() {
 		return ErrRefreshTokenExpired
 	}
 	return nil
@@ -49,4 +50,3 @@ func (t *Token) String() string {
 func (t *Token) TableName() string {
 	return "tokens"
 }
-

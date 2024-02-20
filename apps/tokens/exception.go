@@ -7,4 +7,5 @@ var (
 	ErrAccessTokenExpired  = exception.NewAPIException(1000, "access token expired")
 	ErrRefreshTokenExpired = exception.NewAPIException(1001, "refresh token invalid")
 	ErrTokenNotFound = exception.NewAPIException(1002, "Token is not found in request")
+	ErrPermissDenied = exception.NewAPIException(1003, "api permission denied for current role")
 )

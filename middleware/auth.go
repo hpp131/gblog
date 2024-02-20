@@ -12,7 +12,7 @@ import (
 	"github.com/hpp131/gblog/response"
 )
 
-// 对需要认证鉴权才能访问的api生效,如果api本身就是公开的，那么不需要用到该中间件
+// 对需要携带认证信息才能访问的请求生效,如果api本身就是公开的，那么不需要用到该中间件
 func Auth(c *gin.Context) {
 	tkSVC := ioc.Controller().Get(tokens.AppName).(tokens.Service)
 	ak := api.GetAccessTokenFromHttp(c.Request)
@@ -22,8 +22,8 @@ func Auth(c *gin.Context) {
 	}
 	// 如果能获取到ak,则对ak进行validate,判断token是否过期
 	token, err := tkSVC.ValidateToken(c.Request.Context(), tokens.NewValidateTokenRequest(ak))
-	if err != nil{
+	if err != nil {
 		response.Failed(c, tokens.ErrAccessTokenExpired)
 	}
-	c.Set(tokens.MiddleWareKey, token)	
+	c.Set(tokens.MiddleWareKey, token)
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hpp131/gblog/apps/blogs"
+	"github.com/hpp131/gblog/apps/users"
 	"github.com/hpp131/gblog/ioc"
 	"github.com/hpp131/gblog/middleware"
 	"github.com/hpp131/gblog/response"
@@ -36,7 +37,7 @@ func (b *BlogAPIHandler) Registry(rr gin.IRouter) {
 	// putBlog
 	blogRouter.PUT("/:id", b.putBlog)
 	// deleteBlog
-	blogRouter.DELETE("/:id", b.deleteBlog)
+	blogRouter.DELETE("/:id", middleware.Required(users.ADMIN), b.deleteBlog)
 }
 
 // 实现ioc.Objector interface

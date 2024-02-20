@@ -46,6 +46,7 @@ func (t *TokenAPIHandler) Login(c *gin.Context) {
 		response.Success(c, tk)
 	}
 
+
 }
 
 // 该func供退出api调用
