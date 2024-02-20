@@ -17,6 +17,9 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute(){
+	initCmd.Flags().StringVarP(&username, "username", "u", "superadmin", "create a administrator user")
+	initCmd.Flags().StringVarP(&password, "password", "p", "123123", "create password for administrator")
+
 	rootCmd.AddCommand(initCmd, startCmd)
 	if err := rootCmd.Execute();err != nil{
 		fmt.Fprintln(os.Stderr, err)
