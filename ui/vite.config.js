@@ -16,7 +16,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // string shorthand: http://localhost:5173/foo -> http://localhost:4567/foo
+      // 本地开发环境中，使用vite server做代理（相当于Nginx）
       '/gblogs/api/v1': 'http://127.0.0.1:8080'
     }
   }
