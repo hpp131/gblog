@@ -12,5 +12,11 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  server: {
+    proxy: {
+      // string shorthand: http://localhost:5173/foo -> http://localhost:4567/foo
+      '/gblog/api/v1': 'http://127.0.0.1:8080'
+    }
   }
 })

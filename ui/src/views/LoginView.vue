@@ -1,4 +1,6 @@
 <script setup>
+import { LOGIN } from '@/api/token';
+import { state } from '@/stores/app';
 import { ref } from 'vue';
 
 
@@ -12,12 +14,34 @@ const form = ref({
 const handleSubmit = (data) => {
   // 此处更换为api调用
   console.log(data);
+  LOGIN(form.value).then(function(response){
+    // 关于localstorage
+    state.value.token = response
+  })
 };
+
+const formRules = {
+  username: {
+    required: true,
+    message:'Lack of username'
+  },
+  password:[
+    {
+      required: true,
+      message:'Lack of password'
+    },
+    {
+      minLength:6,
+      message:'Please input great than 6 characters'
+    }
+  ]
+}
+
 </script>
 
 <template>
   <div class="content">
-    <a-form :model="form" class="login-form" @submit="handleSubmit">
+    <a-form :model="form" :rules="formRules" class="login-form"  @submit="handleSubmit">
       <div class="title">GBLOG SYSTEM</div>
       <a-form-item hide-label field="username"  label="">
         <a-input v-model="form.username" placeholder="please enter your username..." >

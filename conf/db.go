@@ -59,10 +59,10 @@ func C() *Config{
 
 func defaultConfig() *Config{
 	return &Config{
-		Mysql: &Mysql{Username: "root",
-			Password: "Strong@01",
-			Host:     "123.60.159.166",
-			Port:     3306,
+		Mysql: &Mysql{Username: "blog",
+			Password: "blog111",
+			Host:     "192.168.0.34",
+			Port:     30007,
 			DB:       "blogs",
 			Debug:    true,},
 	}
