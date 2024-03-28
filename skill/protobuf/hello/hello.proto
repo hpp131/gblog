@@ -1,0 +1,16 @@
+syntax = "proto3";
+option go_package = "github.com/hpp131/gblog/pb";
+// 导入的时候使用proto文件的绝对路径导入，否则会找不到对应的proto文件
+import "skill/protobuf/common/common.proto";
+
+// 在生成的Go语言代码中，"String"将是一个名为String的结构体。
+message String {
+    // value相当于是Go 结构体中的字段；value前面的string是字段对应的类型；1并不是value字段的值，而是编号（在编码时用1代替value，相当于别名）
+    string value = 1;
+    PageRequest page_request = 2;
+}
+
+
+
+
+// --go_opt=module="gitee.com/infraboard/go-course/day21/pb"
