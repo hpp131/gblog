@@ -10,7 +10,7 @@ protoc --proto_path=./  --proto_path=/Users/han/practice/go13project/gblog/skill
 
 
 
-1. protoc-go插件
+2. protoc-go插件
 Protobuf核心的工具集是C++语言开发的，在官方的protoc编译器中并不支持Go语言。要想基于上面的hello.proto文件生成相应的Go代码，需要安装相应的插件
 ```sh
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
