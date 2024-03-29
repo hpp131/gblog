@@ -30,5 +30,5 @@ vim /User/xx/.zprofile
 3. 关于go_package, go_out, go_opt的用法，推荐官方文档：
 [package](https://protobuf.dev/reference/go/go-generated/#package)
 - 实测发现.proto文件中的package字段的作用仅仅是防止不同proto文件中message字段的冲突。protobuf中的package并不是Go中package的概念
-- 在使用import导入其他proto文件时，import后的路径是根据proto文件的路径来的，而不是根据proto文件中package字段定义的包名来的。
+- 在使用import导入其他proto文件时，import后的.proto文件路径需要在--proto_path指定的路径下能找到！！！
 
