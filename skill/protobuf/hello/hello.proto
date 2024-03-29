@@ -1,7 +1,8 @@
 syntax = "proto3";
 option go_package = "github.com/hpp131/gblog/pb";
 // 导入的时候使用proto文件的绝对路径导入，否则会找不到对应的proto文件
-import "skill/protobuf/common/common.proto";
+// 能够确定的是，import后的路径不是根据package来的（比如package hello）
+import "common.proto";
 
 // 在生成的Go语言代码中，"String"将是一个名为String的结构体。
 message String {
@@ -9,8 +10,3 @@ message String {
     string value = 1;
     PageRequest page_request = 2;
 }
-
-
-
-
-// --go_opt=module="gitee.com/infraboard/go-course/day21/pb"

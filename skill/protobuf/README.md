@@ -1,7 +1,16 @@
 1. protoc(protobuf compiler)：protobuf的编译器，可以生成java代码，c++代码，Go代码等。  
 [下载并安装protoc](https://github.com/protocolbuffers/protobuf/releases)
 
-2. protoc-go插件
+protoc命令行参数分析：
+- `-I 即--protoc-path`:protoc从这个参数指定的路径下寻找待编译的.proto文件；另外如果带编译的文件中包括import语句，那么import语句后面的文件也会从这个参数指定的路径下面寻找。
+```sh
+protoc --proto_path=./  --proto_path=/Users/han/practice/go13project/gblog/skill/protobuf/test/common --go_out=./ --go_opt=module="github.com/hpp131/gblog/pb"  hello.proto  common.proto
+```
+
+
+
+
+1. protoc-go插件
 Protobuf核心的工具集是C++语言开发的，在官方的protoc编译器中并不支持Go语言。要想基于上面的hello.proto文件生成相应的Go代码，需要安装相应的插件
 ```sh
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
