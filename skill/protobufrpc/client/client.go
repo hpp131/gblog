@@ -5,7 +5,7 @@ import (
 	"net"
 	"net/rpc"
 	"net/rpc/jsonrpc"
-	// "github.com/hpp131/gblog/skill/protobuf/protobufrpc"
+	"skill/protobufrpc"
 
 )
 
@@ -41,6 +41,5 @@ func main()  {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(response)
-	
+	fmt.Println(response)	
 }

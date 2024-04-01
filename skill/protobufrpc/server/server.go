@@ -8,7 +8,7 @@ import (
 	"net/rpc"
 	"net/rpc/jsonrpc"
 
-	// "github.com/hpp131/gblog/skill/protobuf/protobufrpc"
+	"skill/protobufrpc"
 )
 
 type CusHelloImpl struct{}
