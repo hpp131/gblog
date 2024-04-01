@@ -1,0 +1,19 @@
+syntax = "proto3";
+option go_package = "github.com/hpp131/gblog/skill/grpc";
+
+// 声明struct,代码生成在xxxx.pb.go文件中
+message DemoRequest {
+    string value = 1;
+}
+
+
+// 声明struct,代码生成在xxxx.pb.go文件中
+message DemoResponse {
+    string value = 1;
+}
+
+// 声明interface
+// 代码生成在xxx_grpc.pb.go文件中
+service DemoService {
+    rpc SayHello(DemoRequest) returns (DemoResponse);
+}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+option go_package = "github.com/hpp131/gblog/pb";
+// 导入的时候使用proto文件的绝对路径导入，否则会找不到对应的proto文件
+// 能够确定的是，import后的路径不是根据package来的（比如package hello）
+
+message Request {
+    string value = 1;
+}
+
+message Response {
+    string value = 1;
+}

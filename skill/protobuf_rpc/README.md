@@ -1,0 +1,2 @@
+- 该包主要演示protobuf的代码生成功能，具体的接口定义仍然是手动编写的，编解码协议也使用的自定义协议（没有使用rpc默认的gob协议）
+- 因为包引入的问题，`client.go`和`server.go`文件的运行会有问题，可以考虑单独把`github.com/hpp131/gblog/skill/protobuf/protobufrpc`这个做成一个单独的库然后在代码中引入
