@@ -2,8 +2,7 @@ package ioc
 
 import "github.com/gin-gonic/gin"
 
-// 多个namespace的ioc，使用map嵌套来实现
-
+// 多个namespace的ioc，使用map嵌套来实现;将项目中的所有依赖分为4个namespace:api, controller, config, default
 var nc = &NamespacedContainer{
 	namespace: map[string]*Container{
 		// 用于api层对象的注册， 如tokens.TokenAPIHandler对象
@@ -36,9 +35,9 @@ func  Controller() *Container {
 // 	return nc.namespace["default"]
 // }
 
-// func  Config() *Container{
-// 	return nc.namespace["config"]
-// }
+func  Config() *Container{
+	return nc.namespace["config"]
+}
 
 func  Init() error {
 	// 循环执行ioc容器内已经注册的对象的Init方法
@@ -65,14 +64,12 @@ func Destroy() error {
 }
 
 func GinAPIRegistry(rr gin.IRouter) {
-	// 循环执行ioc容器内已经注册的API对象的Registry方法
-	for _, container := range nc.namespace{
-		for _, obj := range container.storage{
+	// 循环执行api namespace中对象的Registry方法
+		for _, obj := range nc.namespace["api"].storage{
 			if api, ok := obj.(GinAPI); ok {
 				api.Registry(rr)
 			}
 		}
-	}
 }
 
 

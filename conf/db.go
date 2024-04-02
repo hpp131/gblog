@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"sync"
 
+	// "github.com/hpp131/gblog/ioc"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
+
+const APPNAME = "database"
 var config *Config
 
 type Config struct{
@@ -25,6 +28,11 @@ type Mysql struct{
 	l  sync.Mutex
 
 }
+
+// func init() {
+// 	ioc.Config().Registry(APPNAME)
+// }
+
 
 func (m *Mysql) DSN() string{
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
@@ -57,6 +65,7 @@ func C() *Config{
 	return config
 }
 
+// default config
 func defaultConfig() *Config{
 	return &Config{
 		Mysql: &Mysql{Username: "blog",
@@ -71,3 +80,4 @@ func defaultConfig() *Config{
 func (c *Config) DB() *gorm.DB{
 	return c.Mysql.Get()
 }
+

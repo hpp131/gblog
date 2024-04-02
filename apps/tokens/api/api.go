@@ -86,7 +86,7 @@ func GetAccessTokenFromHttp(r *http.Request) string {
 	return cookie.Value
 }
 
-// 实现ioc.Objector interface
+// 实现ioc.Objector interface: 从ioc容器中获取自己所需要的依赖
 func (t *TokenAPIHandler) Init() error{
 	obj := ioc.Controller().Get(tokens.AppName)
 	t.svc = obj.(tokens.Service)
